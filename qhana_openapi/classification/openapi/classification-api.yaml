@@ -1,0 +1,117 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Classification API
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5050/v1.0
+paths:
+  /variational-svm-classification/initialization/{job_id}:
+    get:
+      summary: Initialize Classifier
+      operationId: resources.classifier.Classifier.initialize
+      tags:
+        - classifiers
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_url
+          in: path
+          description: data_url
+          required: true
+          schema:
+            type: string
+        - name:  optimizer_parameters_url
+          in: path
+          description: optimizer_parameters_url
+          required: true
+          schema:
+            type: string
+        - name: entanglement
+            in: path
+            description: entanglement
+            required: true
+            schema:
+              type: string
+              default: full
+        - name: feature_map_reps
+          in: path
+          description: feature_map_reps
+          required: true
+          schema:
+            type: number
+            format: integer
+            default: 1
+        - name: variational_form_reps
+            in: path
+            description: variational_form_reps
+            required: true
+            schema:
+              type: number
+              format: integer
+              default: 3
+      responses:
+        '200':
+          description: Initialization Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InitResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    InitResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        thetas_url:
+          type: string
+        thetas_plus_url:
+          type: string
+        thetas_minus_url:
+          type: string
+        delta_url:
+          type: string
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+    DeleteMsg:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
