@@ -293,137 +293,114 @@ class Classifier:
                        status_code=status_code,
                        results_url=results_url,
                        is_statevector=is_statevector)
-#
-#
-# @app.route('/api/variational-svm-classification/optimization/<int:job_id>', methods=['POST'])
-# async def optimize(job_id):
-#     """
-#         Optimize parameters
-#         * evaluates the results from circuit execution
-#         * optimizes thetas using SPSA optimizer
-#         * generates thetas and delta for the next round (thetas_plus, thetas_minus)
-#     """
-#
-#     # response parameters
-#     message = 'success'
-#     status_code = 200
-#
-#     # load the data from url or json body
-#     results_url = request.args.get('results-url', type=str)
-#     if results_url is None:
-#         results_url = (await request.get_json())['results-url']
-#
-#     labels_url = request.args.get('labels-url', type=str)
-#     if labels_url is None:
-#         labels_url = (await request.get_json())['labels-url']
-#
-#     thetas_in_url = request.args.get('thetas-url', type=str)
-#     if thetas_in_url is None:
-#         thetas_in_url = (await request.get_json())['thetas-url']
-#
-#     delta_in_url = request.args.get('delta-url', type=str)
-#     if delta_in_url is None:
-#         delta_in_url = (await request.get_json())['delta-url']
-#
-#     optimizer_parameters_url = request.args.get('optimizer-parameters-url', type=str)
-#     if optimizer_parameters_url is None:
-#         optimizer_parameters_url = (await request.get_json())['optimizer-parameters-url']
-#
-#     iteration = request.args.get('iteration', type=int)
-#     if iteration is None:
-#         iteration = (await request.get_json())['iteration']
-#
-#     is_statevector = request.args.get('is-statevector', type=str, default='False')
-#     is_statevector = False if is_statevector in ['False', '', 'No', 'None'] else True
-#
-#     # file paths (inputs)
-#     results_file_path = './static/variational-svm-classification/optimization/results' \
-#                         + str(job_id) + '.txt'
-#     labels_file_path = './static/variational-svm-classification/optimization/labels' \
-#                        + str(job_id) + '.txt'
-#     thetas_in_file_path = './static/variational-svm-classification/optimization/thetas-in' \
-#                           + str(job_id) + '.txt'
-#     delta_in_file_path = './static/variational-svm-classification/optimization/delta-in' \
-#                          + str(job_id) + '.txt'
-#     optimizer_parameters_file_path = './static/variational-svm-classification/optimization/optimizer-parameters' \
-#                                      + str(job_id) + '.txt'
-#
-#     # file paths (inputs)
-#     thetas_out_file_path = './static/variational-svm-classification/optimization/thetas-out' \
-#                            + str(job_id) + '.txt'
-#     thetas_plus_file_path = './static/variational-svm-classification/optimization/thetas-plus' \
-#                             + str(job_id) + '.txt'
-#     thetas_minus_file_path = './static/variational-svm-classification/optimization/thetas-minus' \
-#                              + str(job_id) + '.txt'
-#     delta_out_file_path = './static/variational-svm-classification/optimization/delta-out' \
-#                           + str(job_id) + '.txt'
-#
-#     try:
-#         # create working folder if not exist
-#         FileService.create_folder_if_not_exist('./static/variational-svm-classification/optimization/')
-#
-#         # delete old files if exist
-#         FileService.delete_if_exist(results_file_path,
-#                                     labels_file_path,
-#                                     thetas_in_file_path,
-#                                     delta_in_file_path,
-#                                     optimizer_parameters_file_path,
-#                                     thetas_out_file_path,
-#                                     thetas_plus_file_path,
-#                                     thetas_minus_file_path,
-#                                     delta_out_file_path)
-#
-#         # download and store locally
-#         await FileService.download_to_file(results_url, results_file_path)
-#         await FileService.download_to_file(labels_url, labels_file_path)
-#         await FileService.download_to_file(thetas_in_url, thetas_in_file_path)
-#         await FileService.download_to_file(delta_in_url, delta_in_file_path)
-#         await FileService.download_to_file(optimizer_parameters_url, optimizer_parameters_file_path)
-#
-#         results = ResultsSerializer.deserialize(results_file_path)
-#         labels = NumpySerializer.deserialize(labels_file_path)
-#         thetas = NumpySerializer.deserialize(thetas_in_file_path)
-#         delta = NumpySerializer.deserialize(delta_in_file_path)
-#         optimizer_parameters = NumpySerializer.deserialize(optimizer_parameters_file_path)
-#
-#         # make that sure labels are integers
-#         labels = labels.astype(int)
-#
-#         thetas_out, thetas_plus, thetas_minus, delta_out, costs_curr = \
-#             SPSAOptimizer.optimize(results, labels, thetas, delta, iteration, optimizer_parameters, is_statevector)
-#
-#         NumpySerializer.serialize(thetas_out, thetas_out_file_path)
-#         NumpySerializer.serialize(thetas_plus, thetas_plus_file_path)
-#         NumpySerializer.serialize(thetas_minus, thetas_minus_file_path)
-#         NumpySerializer.serialize(delta_out, delta_out_file_path)
-#
-#         # generate urls
-#         url_root = request.host_url
-#         thetas_out_url = generate_url(url_root,
-#                                       'variational-svm-classification/optimization',
-#                                       'thetas-out' + str(job_id))
-#         thetas_plus_url = generate_url(url_root,
-#                                        'variational-svm-classification/optimization',
-#                                        'thetas-plus' + str(job_id))
-#         thetas_minus_url = generate_url(url_root,
-#                                         'variational-svm-classification/optimization',
-#                                         'thetas-minus' + str(job_id))
-#         delta_url = generate_url(url_root,
-#                                  'variational-svm-classification/optimization',
-#                                  'delta-out' + str(job_id))
-#
-#     except Exception as ex:
-#         message = str(ex)
-#         status_code = 500
-#         return jsonify(message=message, status_code=status_code)
-#
-#     return jsonify(message=message,
-#                    status_code=status_code,
-#                    thetas_out_url=thetas_out_url,
-#                    thetas_plus_url=thetas_plus_url,
-#                    thetas_minus_url=thetas_minus_url,
-#                    delta_url=delta_url,
-#                    costs_curr=costs_curr)
+
+    #
+    #
+    # @app.route('/api/variational-svm-classification/optimization/<int:job_id>', methods=['POST'])
+    @staticmethod
+    def optimize(job_id, results_url, labels_url, thetas_in_url, delta_in_url, optimizer_parameters_url, iteration,
+                 is_statevector):
+        """
+            Optimize parameters
+            * evaluates the results from circuit execution
+            * optimizes thetas using SPSA optimizer
+            * generates thetas and delta for the next round (thetas_plus, thetas_minus)
+        """
+
+        # response parameters
+        message = 'success'
+        status_code = 200
+
+        is_statevector = False if is_statevector in ['False', '', 'No', 'None'] else True
+
+        # file paths (inputs)
+        results_file_path = './static/variational-svm-classification/optimization/results' \
+                            + str(job_id) + '.txt'
+        labels_file_path = './static/variational-svm-classification/optimization/labels' \
+                           + str(job_id) + '.txt'
+        thetas_in_file_path = './static/variational-svm-classification/optimization/thetas-in' \
+                              + str(job_id) + '.txt'
+        delta_in_file_path = './static/variational-svm-classification/optimization/delta-in' \
+                             + str(job_id) + '.txt'
+        optimizer_parameters_file_path = './static/variational-svm-classification/optimization/optimizer-parameters' \
+                                         + str(job_id) + '.txt'
+
+        # file paths (inputs)
+        thetas_out_file_path = './static/variational-svm-classification/optimization/thetas-out' \
+                               + str(job_id) + '.txt'
+        thetas_plus_file_path = './static/variational-svm-classification/optimization/thetas-plus' \
+                                + str(job_id) + '.txt'
+        thetas_minus_file_path = './static/variational-svm-classification/optimization/thetas-minus' \
+                                 + str(job_id) + '.txt'
+        delta_out_file_path = './static/variational-svm-classification/optimization/delta-out' \
+                              + str(job_id) + '.txt'
+
+        try:
+            # create working folder if not exist
+            FileService.create_folder_if_not_exist('./static/variational-svm-classification/optimization/')
+
+            # delete old files if exist
+            FileService.delete_if_exist(results_file_path,
+                                        labels_file_path,
+                                        thetas_in_file_path,
+                                        delta_in_file_path,
+                                        optimizer_parameters_file_path,
+                                        thetas_out_file_path,
+                                        thetas_plus_file_path,
+                                        thetas_minus_file_path,
+                                        delta_out_file_path)
+
+            # download and store locally
+            FileService.download_to_file(results_url, results_file_path)
+            FileService.download_to_file(labels_url, labels_file_path)
+            FileService.download_to_file(thetas_in_url, thetas_in_file_path)
+            FileService.download_to_file(delta_in_url, delta_in_file_path)
+            FileService.download_to_file(optimizer_parameters_url, optimizer_parameters_file_path)
+
+            results = ResultsSerializer.deserialize(results_file_path)
+            labels = NumpySerializer.deserialize(labels_file_path)
+            thetas = NumpySerializer.deserialize(thetas_in_file_path)
+            delta = NumpySerializer.deserialize(delta_in_file_path)
+            optimizer_parameters = NumpySerializer.deserialize(optimizer_parameters_file_path)
+
+            # make that sure labels are integers
+            labels = labels.astype(int)
+
+            thetas_out, thetas_plus, thetas_minus, delta_out, costs_curr = \
+                SPSAOptimizer.optimize(results, labels, thetas, delta, iteration, optimizer_parameters, is_statevector)
+
+            NumpySerializer.serialize(thetas_out, thetas_out_file_path)
+            NumpySerializer.serialize(thetas_plus, thetas_plus_file_path)
+            NumpySerializer.serialize(thetas_minus, thetas_minus_file_path)
+            NumpySerializer.serialize(delta_out, delta_out_file_path)
+
+            # generate urls
+            url_root = connexion.request.host_url
+            thetas_out_url = generate_url(url_root,
+                                          'variational-svm-classification/optimization',
+                                          'thetas-out' + str(job_id))
+            thetas_plus_url = generate_url(url_root,
+                                           'variational-svm-classification/optimization',
+                                           'thetas-plus' + str(job_id))
+            thetas_minus_url = generate_url(url_root,
+                                            'variational-svm-classification/optimization',
+                                            'thetas-minus' + str(job_id))
+            delta_url = generate_url(url_root,
+                                     'variational-svm-classification/optimization',
+                                     'delta-out' + str(job_id))
+
+        except Exception as ex:
+            message = str(ex)
+            status_code = 500
+            return jsonify(message=message, status_code=status_code)
+
+        return jsonify(message=message,
+                       status_code=status_code,
+                       thetas_out_url=thetas_out_url,
+                       thetas_plus_url=thetas_plus_url,
+                       thetas_minus_url=thetas_minus_url,
+                       delta_url=delta_url,
+                       costs_curr=costs_curr)
 #
 #
 # @app.route('/api/plots/grid-generation/<int:job_id>', methods=['POST'])

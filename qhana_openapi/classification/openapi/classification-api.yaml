@@ -168,7 +168,7 @@ paths:
           description: backend_name
           required: true
           schema:
-            type: backend_name
+            type: string
         - name: token
           in: query
           description: token
@@ -202,6 +202,83 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /variational-svm-classification/optimization/{job_id}:
+    post:
+      summary: Optimize parameters
+      operationId: resources.classifier.Classifier.optimize
+      tags:
+        - classifiers
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: results_url
+          in: query
+          description: results_url
+          required: true
+          schema:
+            type: string
+        - name:  labels_url
+          in: query
+          description: labels_url
+          required: true
+          schema:
+            type: string
+        - name: thetas_in_url
+          in: query
+          description: thetas_in_url
+          required: true
+          schema:
+            type: string
+        - name: delta_in_url
+          in: query
+          description: delta_in_url
+          required: true
+          schema:
+            type: string
+        - name: optimizer_parameters_url
+          in: query
+          description: optimizer_parameters_url
+          required: true
+          schema:
+            type: string
+        - name: is_statevector
+          in: query
+          description: is_statevector
+          required: true
+          schema:
+            type: string
+            default: False
+        - name: iteration
+          in: query
+          description: iteration
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Parameter Optimization Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OptResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     InitResponse:
@@ -221,6 +298,25 @@ components:
           type: string
         delta_url:
           type: string
+    OptResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        thetas_out_url:
+          type: string
+        thetas_plus_url:
+          type: string
+        thetas_minus_url:
+          type: string
+        delta_url:
+          type: string
+        costs_curr:
+          type: integer
     GenResponse:
       required:
         - message
