@@ -194,7 +194,6 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, circuits_url=circuits_url)
 
-    # @app.route('/api/circuit-generation/destructive-interference-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
     def generate_destructive_interference_circuits(job_id, data_angles_url, centroid_angles_url, max_qubits):
         """
@@ -367,7 +366,6 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, cluster_mapping_url=cluster_mapping_url)
 
-    # @app.route('/api/circuit-execution/destructive-interference-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
     def execute_destructive_interference_circuits(job_id, circuits_url, k, backend_name, token, shots_per_circuit):
         """
@@ -425,7 +423,6 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, cluster_mapping_url=cluster_mapping_url)
 
-    # @app.route('/api/circuit-execution/state-preparation-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
     def execute_state_preparation_circuits(job_id, circuits_url, k, backend_name, token, shots_per_circuit):
         """
@@ -483,17 +480,11 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, cluster_mapping_url=cluster_mapping_url)
 
-    # @app.route('/api/classical-clustering/sklearn-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def perform_sklearn_clustering(job_id):
+    def perform_sklearn_clustering(job_id, data_url, centroids_url):
         """
         Executes one iteration of sklearn clustering algorithm.
         """
-
-        # load the data from url
-        data_url = request.args.get('data_url', type=str)
-        centroids_url = request.args.get('centroids_url', type=str)
-
         data_file_path = './static/classical-clustering/sklearn-clustering/data' \
                          + str(job_id) + '.txt'
         centroids_file_path = './static/classical-clustering/sklearn-clustering/centroids' \
@@ -541,9 +532,8 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, cluster_mapping_url=cluster_mapping_url)
 
-    # @app.route('/api/centroid-calculation/rotational-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def calculate_centroids(job_id):
+    def calculate_centroids(job_id, data_url, cluster_mapping_url, old_centroids_url):
         """
         Performs the post processing of a general rotational clustering algorithm,
         i.e. the centroid calculations.
@@ -553,15 +543,6 @@ class Clusterer:
         """
 
         # load the data from url
-        data_url = request.args.get('data_url', type=str)
-        if data_url is None:
-            data_url = (request.get_json())['data_url']
-        cluster_mapping_url = request.args.get('cluster_mapping_url', type=str)
-        if cluster_mapping_url is None:
-            cluster_mapping_url = (request.get_json())['cluster_mapping_url']
-        old_centroids_url = request.args.get('old_centroids_url', type=str)
-        if old_centroids_url is None:
-            old_centroids_url = (request.get_json())['old_centroids_url']
 
         data_file_path = './static/centroid-calculation/rotational-clustering/data' \
                          + str(job_id) + '.txt'
@@ -617,9 +598,8 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, centroids_url=centroids_url)
 
-    # @app.route('/api/convergence-check/<int:job_id>', methods=['POST'])
     @staticmethod
-    def check_convergence(job_id):
+    def check_convergence(job_id, new_centroids_url, old_centroids_url, eps):
         """
         Performs the convergence check for a general KMeans clustering algorithm.
 
@@ -631,14 +611,6 @@ class Clusterer:
         """
 
         # load the data from url
-        new_centroids_url = request.args.get('new_centroids_url', type=str)
-        if new_centroids_url is None:
-            new_centroids_url = (request.get_json())['new_centroids_url']
-        old_centroids_url = request.args.get('old_centroids_url', type=str)
-        if old_centroids_url is None:
-            old_centroids_url = (request.get_json())['old_centroids_url']
-        eps = request.args.get('eps', type=float, default=0.0001)
-
         old_centroids_file_path = './static/convergence-check/old_centroids' + str(job_id) + '.txt'
         new_centroids_file_path = './static/convergence-check/new_centroids' + str(job_id) + '.txt'
 
@@ -674,7 +646,6 @@ class Clusterer:
 
         return jsonify(message=message, status_code=status_code, convergence=convergence, distance=distance)
 
-    # @app.route('/api/circuit-generation/negative-rotation-clustering/<int:job_id>', methods=['GET'])
     @staticmethod
     def get_negative_rotation_circuits(job_id):
         """
