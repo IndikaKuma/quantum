@@ -3,6 +3,7 @@ from flask import jsonify
 
 from SPSAOptimizer import SPSAOptimizer
 from circuitExecutor import CircuitExecutor
+from decisionBoundaryPlotter import DecisionBoundaryPlotter
 from fileService import FileService
 from listSerializer import ListSerializer
 from numpySerializer import NumpySerializer
@@ -401,67 +402,60 @@ class Classifier:
                        thetas_minus_url=thetas_minus_url,
                        delta_url=delta_url,
                        costs_curr=costs_curr)
-#
-#
-# @app.route('/api/plots/grid-generation/<int:job_id>', methods=['POST'])
-# async def generate_grid(job_id):
-#     """
-#         Takes original data and generates a grid of new data points that surrounds original data
-#         - resolution parameter r determines the dimensions of the grid, e.g. r x r for 2 dimensional data
-#     """
-#
-#     # response parameters
-#     message = 'success'
-#     status_code = 200
-#
-#     # load the data from url or json body
-#     data_url = request.args.get('data-url', type=str)
-#     if data_url is None:
-#         data_url = (await request.get_json())['data-url']
-#
-#     resolution = request.args.get('resolution', type=int, default=50)
-#
-#     # file paths (inputs)
-#     data_file_path = './static/plots/grid-generation/data' \
-#                      + str(job_id) + '.txt'
-#
-#     # file paths (inputs)
-#     grid_file_path = './static/plots/grid-generation/grid' \
-#                      + str(job_id) + '.txt'
-#
-#     try:
-#         # create working folder if not exist
-#         FileService.create_folder_if_not_exist('./static/plots/grid-generation/')
-#
-#         # delete old files if exist
-#         FileService.delete_if_exist(data_file_path,
-#                                     grid_file_path)
-#
-#         # download the data and store it locally
-#         await FileService.download_to_file(data_url, data_file_path)
-#
-#         # deserialize the data
-#         data = NumpySerializer.deserialize(data_file_path)
-#
-#         grid = DecisionBoundaryPlotter.generate_grid(data, resolution)
-#
-#         NumpySerializer.serialize(grid, grid_file_path)
-#
-#         # generate urls
-#         url_root = request.host_url
-#         grid_url = generate_url(url_root,
-#                                 'plots/grid-generation',
-#                                 'grid' + str(job_id))
-#     except Exception as ex:
-#         message = str(ex)
-#         status_code = 500
-#         return jsonify(message=message, status_code=status_code)
-#
-#     return jsonify(message=message,
-#                    status_code=status_code,
-#                    grid_url=grid_url)
-#
-#
+
+    @staticmethod
+    def generate_grid(job_id, data_url, resolution):
+        """
+            Takes original data and generates a grid of new data points that surrounds original data
+            - resolution parameter r determines the dimensions of the grid, e.g. r x r for 2 dimensional data
+        """
+
+        # response parameters
+        message = 'success'
+        status_code = 200
+
+        # load the data from url or json body
+
+        # file paths (inputs)
+        data_file_path = './static/plots/grid-generation/data' \
+                         + str(job_id) + '.txt'
+
+        # file paths (inputs)
+        grid_file_path = './static/plots/grid-generation/grid' \
+                         + str(job_id) + '.txt'
+
+        try:
+            # create working folder if not exist
+            FileService.create_folder_if_not_exist('./static/plots/grid-generation/')
+
+            # delete old files if exist
+            FileService.delete_if_exist(data_file_path,
+                                        grid_file_path)
+
+            # download the data and store it locally
+            FileService.download_to_file(data_url, data_file_path)
+
+            # deserialize the data
+            data = NumpySerializer.deserialize(data_file_path)
+
+            grid = DecisionBoundaryPlotter.generate_grid(data, resolution)
+
+            NumpySerializer.serialize(grid, grid_file_path)
+
+            # generate urls
+            url_root = connexion.request.host_url
+            grid_url = generate_url(url_root,
+                                    'plots/grid-generation',
+                                    'grid' + str(job_id))
+        except Exception as ex:
+            message = str(ex)
+            status_code = 500
+            return jsonify(message=message, status_code=status_code)
+
+        return jsonify(message=message,
+                       status_code=status_code,
+                       grid_url=grid_url)
+
 # # TODO: Remove when QuantumCircuit serialization/deserialization is fixed
 #
 # @app.route('/api/plots/prediction/<int:job_id>', methods=['POST'])

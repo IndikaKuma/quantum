@@ -137,7 +137,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
   /variational-svm-classification/circuit-execution/{job_id}:
     post:
       summary: Execute Circuits
@@ -195,14 +194,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
   /variational-svm-classification/optimization/{job_id}:
     post:
       summary: Optimize parameters
@@ -272,6 +269,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /plots/grid-generation/{job_id}:
+    post:
+      summary: Execute Circuits
+      operationId: resources.classifier.Classifier.execute_circuits
+      tags:
+        - classifiers
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_url
+          in: query
+          description: data_url
+          required: true
+          schema:
+            type: string
+        - name: resolution
+          in: query
+          description: resolution
+          required: true
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Grid Generation Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
         default:
           description: Unexpected error
@@ -327,6 +369,17 @@ components:
         message:
           type: string
         parameterizations_url:
+          type: string
+    GridResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        grid_url:
           type: string
     ExeResponse:
       required:
