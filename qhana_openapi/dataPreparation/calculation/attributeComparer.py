@@ -3,9 +3,9 @@ Author: Daniel Fink
 Email: daniel-fink@outlook.com
 """
 
+import enum
 from abc import ABCMeta
 from abc import abstractmethod
-import enum
 
 
 class AttributeComparerType(enum.Enum):

@@ -3,10 +3,10 @@ Author: Daniel Fink
 Email: daniel-fink@outlook.com
 """
 
-from taxonomy import Taxonomy
-from networkx.readwrite import json_graph
 import simplejson as json
+from networkx.readwrite import json_graph
 
+from taxonomy import Taxonomy
 
 # we store the mapping between attribute names
 # and their taxonomy names with the format

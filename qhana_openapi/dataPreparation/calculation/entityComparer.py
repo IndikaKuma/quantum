@@ -4,11 +4,12 @@ Email: daniel-fink@outlook.com
 """
 
 import enum
+
 import numpy as np
 from aggregator import AggregatorType, AggregatorFactory
-from transformer import TransformerType, TransformerFactory
-from elementComparer import ElementComparerType, ElementComparerFactory
 from attributeComparer import AttributeComparerType, AttributeComparerFactory
+from elementComparer import ElementComparerType, ElementComparerFactory
+from transformer import TransformerType, TransformerFactory
 
 
 class EmptyAttributeAction(enum.Enum):

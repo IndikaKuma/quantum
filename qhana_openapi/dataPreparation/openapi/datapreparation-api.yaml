@@ -1,0 +1,142 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: QHana Data Preparation API
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5050/v1.0
+paths:
+  /wu-palmer/{job_id}:
+    post:
+      summary: Trigger the wu palmer data preparation algorithm
+      operationId: resources.data_preparator.DataPreparator.perform_wu_palmer_data_preparation
+      tags:
+        - DataPreparator
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: integer
+        - name: input_data_url
+          in: query
+          description: input_data_url
+          required: true
+          schema:
+            type: string
+        - name: aggregator_type
+          in: query
+          description: aggregator_type
+          required: false
+          schema:
+            type: string
+        - name: transformer_type
+          in: query
+          description: transformer_type
+          required: false
+          schema:
+            type: string
+            default: full
+        - name: attributes
+          in: query
+          description: attributes
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Initialization Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InitResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get output of  the wu palmer data preparation algorithm
+      operationId: resources.data_preparator.DataPreparator.get_output
+      tags:
+        - DataPreparator
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get output Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WUPalmerResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    InitResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+    WUPalmerResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        output_data_url:
+          type: string
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+    DeleteMsg:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string

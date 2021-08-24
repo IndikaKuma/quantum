@@ -3,8 +3,6 @@ Author: Daniel Fink
 Email: daniel-fink@outlook.com
 """
 
-import networkx as nx
-
 
 class Taxonomy:
     """
@@ -32,4 +30,4 @@ class Taxonomy:
         """
         Returns the root of the taxonomy, i.e. of graph (tree).
         """
-        return [n for n,d in self.graph.in_degree() if d == 0][0]
+        return [n for n, d in self.graph.in_degree() if d == 0][0]

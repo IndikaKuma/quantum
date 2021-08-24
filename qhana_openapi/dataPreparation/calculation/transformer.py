@@ -3,10 +3,10 @@ Author: Daniel Fink
 Email: daniel-fink@outlook.com
 """
 
-from abc import ABCMeta
-from abc import abstractmethod
 import enum
 import math
+from abc import ABCMeta
+from abc import abstractmethod
 
 
 class TransformerType(enum.Enum):

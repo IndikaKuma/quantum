@@ -4,11 +4,10 @@ Email: daniel-fink@outlook.com
 """
 
 import asyncio
-import matplotlib.pyplot as plt
-import networkx as nx
-from taxonomyLoadingService import TaxonomyLoadingService
-from entityLoadingService import EntityLoadingService
+
 from calculation.entityComparer import EntityComparer
+from entityLoadingService import EntityLoadingService
+from taxonomyLoadingService import TaxonomyLoadingService
 
 
 async def main():

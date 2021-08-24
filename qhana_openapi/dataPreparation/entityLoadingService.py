@@ -4,6 +4,7 @@ Email: daniel-fink@outlook.com
 """
 
 import csv
+
 from entity import Entity
 
 

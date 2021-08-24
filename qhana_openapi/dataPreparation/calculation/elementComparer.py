@@ -3,13 +3,14 @@ Author: Daniel Fink
 Email: daniel-fink@outlook.com
 """
 
+import json
+import math
+import os
 from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
+
 import networkx as nx
-import os
-import json
-import math
 
 
 class ElementComparerType(Enum):
