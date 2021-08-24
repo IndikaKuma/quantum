@@ -583,7 +583,6 @@ class Classifier:
                        status_code=status_code,
                        plot_url=plot_url)
 
-
 # # @app.route('/static/variational-svm-classification/initialization/circuit-template<int:job_id>.txt', methods=['GET'])
 #     def get_pickle_circuit(job_id):
 #         payload = open('./static/variational-svm-classification/initialization/circuit-template' + str(job_id) + '.txt',
