@@ -278,7 +278,7 @@ paths:
   /plots/grid-generation/{job_id}:
     post:
       summary: Execute Circuits
-      operationId: resources.classifier.Classifier.execute_circuits
+      operationId: resources.classifier.Classifier.generate_grid
       tags:
         - classifiers
       parameters:
@@ -315,6 +315,114 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /plots/prediction/{job_id}:
+    post:
+      summary: Predict
+      operationId: resources.classifier.Classifier.predict
+      tags:
+        - classifiers
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: results_url
+          in: query
+          description: results_url
+          required: true
+          schema:
+            type: string
+        - name: is_statevector
+          in: query
+          description: is_statevector
+          required: true
+          schema:
+            type: string
+            default: False
+        - name: n_classes
+          in: query
+          description: iteration
+          required: true
+          schema:
+            type: integer
+            default: 2
+      responses:
+        '200':
+          description: Predict Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PredictResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /plots/plot/{job_id}:
+    post:
+      summary:  Plots data and decision boundary
+      operationId: resources.classifier.Classifier.plot_boundary
+      tags:
+        - classifiers
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_url
+          in: query
+          description: data_url
+          required: true
+          schema:
+            type: string
+        - name: labels_url
+          in: query
+          description: labels_url
+          required: true
+          schema:
+            type: string
+        - name: grid_url
+          in: query
+          description: grid_url
+          required: true
+          schema:
+            type: string
+        - name: predicitons_url
+          in: query
+          description: predicitons_url
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Plot Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlotResponse"
+        '404':
+          description: Classifier not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         default:
           description: Unexpected error
           content:
@@ -369,6 +477,28 @@ components:
         message:
           type: string
         parameterizations_url:
+          type: string
+    PredictResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        predictions_url:
+          type: string
+    PlotResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        plot_url:
           type: string
     GridResponse:
       required:
