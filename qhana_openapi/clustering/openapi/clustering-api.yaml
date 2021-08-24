@@ -1,0 +1,506 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Clustering API
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5050/v1.0
+paths:
+  /centroid-calculation/initialization/{job_id}:
+    post:
+      summary: Create k random centroids
+      operationId: resources.clusterer.Clusterer.initialize_centroids
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: k
+          in: query
+          description: k
+          required: true
+          schema:
+            type: integer
+            default: 2
+      responses:
+        '200':
+          description: Centroids Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CentroidsResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /angle-calculation/rotational-clustering/{job_id}:
+    post:
+      summary: Angle calculations
+      operationId: resources.clusterer.Clusterer.calculate_angles
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_url
+          in: query
+          description: data_url
+          required: true
+          schema:
+            type: string
+        - name:  centroids_url
+          in: query
+          description: centroids_url
+          required: true
+          schema:
+            type: string
+        - name: base_vector_x
+          in: query
+          description: base_vector_x
+          required: true
+          schema:
+            type: number
+            format: float
+            default: -0.7071
+        - name: base_vector_y
+          in: query
+          description: base_vector_y
+          required: true
+          schema:
+            type: number
+            format: float
+            default: -0.7071
+      responses:
+        '200':
+          description: Calculate Angles Parameterizations Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalAnglesResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /circuit-generation/negative-rotation-clustering/{job_id}:
+    post:
+      summary: Execute Circuits
+      operationId: resources.clusterer.Clusterer.generate_negative_rotation_circuits
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_angles_url
+          in: query
+          description: data_angles_url
+          required: true
+          schema:
+            type: string
+        - name:  centroid_angles_url
+          in: query
+          description: centroid_angles_url
+          required: true
+          schema:
+            type: string
+        - name: max_qubits
+          in: query
+          description: max_qubits
+          required: true
+          schema:
+            type: integer
+            default: 5
+      responses:
+        '200':
+          description: generate negative rotation circuits Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /variational-svm-classification/optimization/{job_id}:
+    post:
+      summary: Optimize parameters
+      operationId: resources.clusterer.Clusterer.optimize
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: results_url
+          in: query
+          description: results_url
+          required: true
+          schema:
+            type: string
+        - name:  labels_url
+          in: query
+          description: labels_url
+          required: true
+          schema:
+            type: string
+        - name: thetas_in_url
+          in: query
+          description: thetas_in_url
+          required: true
+          schema:
+            type: string
+        - name: delta_in_url
+          in: query
+          description: delta_in_url
+          required: true
+          schema:
+            type: string
+        - name: optimizer_parameters_url
+          in: query
+          description: optimizer_parameters_url
+          required: true
+          schema:
+            type: string
+        - name: is_statevector
+          in: query
+          description: is_statevector
+          required: true
+          schema:
+            type: string
+            default: False
+        - name: iteration
+          in: query
+          description: iteration
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Parameter Optimization Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OptResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /plots/grid-generation/{job_id}:
+    post:
+      summary: Execute Circuits
+      operationId: resources.clusterer.Clusterer.generate_grid
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_url
+          in: query
+          description: data_url
+          required: true
+          schema:
+            type: string
+        - name: resolution
+          in: query
+          description: resolution
+          required: true
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Grid Generation Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /plots/prediction/{job_id}:
+    post:
+      summary: Predict
+      operationId: resources.clusterer.Clusterer.predict
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: results_url
+          in: query
+          description: results_url
+          required: true
+          schema:
+            type: string
+        - name: is_statevector
+          in: query
+          description: is_statevector
+          required: true
+          schema:
+            type: string
+            default: False
+        - name: n_classes
+          in: query
+          description: iteration
+          required: true
+          schema:
+            type: integer
+            default: 2
+      responses:
+        '200':
+          description: Predict Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PredictResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /plots/plot/{job_id}:
+    post:
+      summary:  Plots data and decision boundary
+      operationId: resources.clusterer.Clusterer.plot_boundary
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: data_url
+          in: query
+          description: data_url
+          required: true
+          schema:
+            type: string
+        - name: labels_url
+          in: query
+          description: labels_url
+          required: true
+          schema:
+            type: string
+        - name: grid_url
+          in: query
+          description: grid_url
+          required: true
+          schema:
+            type: string
+        - name: predicitons_url
+          in: query
+          description: predicitons_url
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Plot Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlotResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    InitResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        thetas_url:
+          type: string
+        thetas_plus_url:
+          type: string
+        thetas_minus_url:
+          type: string
+        delta_url:
+          type: string
+    OptResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        thetas_out_url:
+          type: string
+        thetas_plus_url:
+          type: string
+        thetas_minus_url:
+          type: string
+        delta_url:
+          type: string
+        costs_curr:
+          type: integer
+    GenResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        parameterizations_url:
+          type: string
+    PredictResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        predictions_url:
+          type: string
+    GetResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        circuits_url:
+          type: string
+    CalAnglesResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        data_angles_url:
+          type: string
+        centroid_angles_url:
+          type: string
+    CentroidsResponse:
+      required:
+        - message
+      properties:
+        status_code:
+          type: number
+          format: integer
+        message:
+          type: string
+        centroids_url:
+          type: string
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+    DeleteMsg:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
