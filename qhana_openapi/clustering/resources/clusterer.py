@@ -196,18 +196,13 @@ class Clusterer:
 
     # @app.route('/api/circuit-generation/destructive-interference-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def generate_destructive_interference_circuits(job_id):
+    def generate_destructive_interference_circuits(job_id, data_angles_url, centroid_angles_url, max_qubits):
         """
         Generates the destructive interference clustering quantum circuits.
 
         We take the data and centroid angles and return a url to a file with the
         quantum circuits as qasm strings.
         """
-
-        # load the data from url
-        data_angles_url = request.args.get('data_angles_url', type=str)
-        centroid_angles_url = request.args.get('centroid_angles_url', type=str)
-        max_qubits = request.args.get('max_qubits', type=int, default=5)
 
         data_angles_file_path = './static/circuit-generation/destructive-interference-clustering/data_angles' \
                                 + str(job_id) + '.txt'
@@ -258,7 +253,7 @@ class Clusterer:
 
     # @app.route('/api/circuit-generation/state-preparation-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def generate_state_preparation_circuits(job_id):
+    def generate_state_preparation_circuits(job_id, data_angles_url, centroid_angles_url, max_qubits):
         """
         Generates the state preparation clustering quantum circuits.
 
@@ -267,9 +262,6 @@ class Clusterer:
         """
 
         # load the data from url
-        data_angles_url = request.args.get('data_angles_url', type=str)
-        centroid_angles_url = request.args.get('centroid_angles_url', type=str)
-        max_qubits = request.args.get('max_qubits', type=int, default=5)
 
         data_angles_file_path = './static/circuit-generation/state-preparation-clustering/data_angles' \
                                 + str(job_id) + '.txt'
@@ -320,26 +312,13 @@ class Clusterer:
 
     # @app.route('/api/circuit-execution/negative-rotation-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def execute_negative_rotation_circuits(job_id):
+    def execute_negative_rotation_circuits(job_id, circuits_url, k, backend_name, token, shots_per_circuit):
         """
         Executes the negative rotation clustering algorithm given the generated
         quantum circuits.
         """
 
         # load the data from url
-        circuits_url = request.args.get('circuits_url', type=str)
-        if circuits_url is None:
-            circuits_url = (request.get_json())['circuits_url']
-        k = request.args.get('k', type=int)
-        if k is None:
-            k = (request.get_json())['k']
-        backend_name = request.args.get('backend_name', type=str)
-        if backend_name is None:
-            backend_name = (request.get_json())['backend_name']
-        token = request.args.get('token', type=str)
-        if token is None:
-            token = (request.get_json())['token']
-        shots_per_circuit = request.args.get('shots_per_circuit', type=int, default=8192)
 
         circuits_file_path = './static/circuit-execution/negative-rotation-clustering/circuits' \
                              + str(job_id) + '.txt'
@@ -390,18 +369,13 @@ class Clusterer:
 
     # @app.route('/api/circuit-execution/destructive-interference-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def execute_destructive_interference_circuits(job_id):
+    def execute_destructive_interference_circuits(job_id, circuits_url, k, backend_name, token, shots_per_circuit):
         """
         Executes the destructive interference clustering algorithm given the generated
         quantum circuits.
         """
 
         # load the data from url
-        circuits_url = request.args.get('circuits_url', type=str)
-        k = request.args.get('k', type=int)
-        backend_name = request.args.get('backend_name', type=str, default='aer_qasm_simulator')
-        token = request.args.get('token', type=str, default='')
-        shots_per_circuit = request.args.get('shots_per_circuit', type=int, default=8192)
 
         circuits_file_path = './static/circuit-execution/destructive-interference-clustering/circuits' \
                              + str(job_id) + '.txt'
@@ -453,18 +427,13 @@ class Clusterer:
 
     # @app.route('/api/circuit-execution/state-preparation-clustering/<int:job_id>', methods=['POST'])
     @staticmethod
-    def execute_state_preparation_circuits(job_id):
+    def execute_state_preparation_circuits(job_id, circuits_url, k, backend_name, token, shots_per_circuit):
         """
         Executes the state preparation clustering algorithm given the generated
         quantum circuits.
         """
 
         # load the data from url
-        circuits_url = request.args.get('circuits_url', type=str)
-        k = request.args.get('k', type=int)
-        backend_name = request.args.get('backend_name', type=str, default='aer_qasm_simulator')
-        token = request.args.get('token', type=str, default='')
-        shots_per_circuit = request.args.get('shots_per_circuit', type=int, default=8192)
 
         circuits_file_path = './static/circuit-execution/state-preparation-clustering/circuits' \
                              + str(job_id) + '.txt'

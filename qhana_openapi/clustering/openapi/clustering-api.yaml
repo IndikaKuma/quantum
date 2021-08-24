@@ -160,10 +160,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /variational-svm-classification/optimization/{job_id}:
+  /circuit-generation/destructive-interference-clustering/{job_id}:
     post:
-      summary: Optimize parameters
-      operationId: resources.clusterer.Clusterer.optimize
+      summary: generate destructive interference circuits
+      operationId: resources.clusterer.Clusterer.generate_destructive_interference_circuits
       tags:
         - clustering
       parameters:
@@ -173,56 +173,32 @@ paths:
           required: true
           schema:
             type: string
-        - name: results_url
+        - name: data_angles_url
           in: query
-          description: results_url
+          description: data_angles_url
           required: true
           schema:
             type: string
-        - name:  labels_url
+        - name:  centroid_angles_url
           in: query
-          description: labels_url
+          description: centroid_angles_url
           required: true
           schema:
             type: string
-        - name: thetas_in_url
+        - name: max_qubits
           in: query
-          description: thetas_in_url
-          required: true
-          schema:
-            type: string
-        - name: delta_in_url
-          in: query
-          description: delta_in_url
-          required: true
-          schema:
-            type: string
-        - name: optimizer_parameters_url
-          in: query
-          description: optimizer_parameters_url
-          required: true
-          schema:
-            type: string
-        - name: is_statevector
-          in: query
-          description: is_statevector
-          required: true
-          schema:
-            type: string
-            default: False
-        - name: iteration
-          in: query
-          description: iteration
+          description: max_qubits
           required: true
           schema:
             type: integer
+            default: 5
       responses:
         '200':
-          description: Parameter Optimization Response
+          description: generate destructive interference circuits Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OptResponse"
+                $ref: "#/components/schemas/GenResponse"
         '404':
           description: Clusterer not found
           content:
@@ -235,10 +211,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /plots/grid-generation/{job_id}:
+  /circuit-generation/state-preparation-clustering/{job_id}:
     post:
-      summary: Execute Circuits
-      operationId: resources.clusterer.Clusterer.generate_grid
+      summary: Generates the state preparation clustering quantum circuits
+      operationId: resources.clusterer.Clusterer.generate_state_preparation_circuits
       tags:
         - clustering
       parameters:
@@ -248,26 +224,224 @@ paths:
           required: true
           schema:
             type: string
-        - name: data_url
+        - name: data_angles_url
           in: query
-          description: data_url
+          description: data_angles_url
           required: true
           schema:
             type: string
-        - name: resolution
+        - name:  centroid_angles_url
           in: query
-          description: resolution
+          description: centroid_angles_url
+          required: true
+          schema:
+            type: string
+        - name: max_qubits
+          in: query
+          description: max_qubits
           required: true
           schema:
             type: integer
-            default: 50
+            default: 5
       responses:
         '200':
-          description: Grid Generation Response
+          description: generate destructive interference circuits Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GridResponse"
+                $ref: "#/components/schemas/GenResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /circuit-execution/negative-rotation-clustering/{job_id}:
+    post:
+      summary: Executes the negative rotation clustering algorithm given the generated quantum circuits
+      operationId: resources.clusterer.Clusterer.execute_negative_rotation_circuits
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: circuits_url
+          in: query
+          description: circuits_url
+          required: true
+          schema:
+            type: string
+        - name: backend_name
+          in: query
+          description: backend_name
+          required: true
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: token
+          required: true
+          schema:
+            type: string
+        - name: k
+          in: query
+          description: k
+          required: true
+          schema:
+            type: integer
+        - name: shots_per_circuit
+          in: query
+          description: shots_per_circuit
+          required: true
+          schema:
+            type: integer
+            default: 8192
+      responses:
+        '200':
+          description: execute negative rotation circuits Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExeResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /circuit-execution/destructive-interference-clustering/{job_id}:
+    post:
+      summary: Executes the destructive interference clustering algorithm given the generated quantum circuits
+      operationId: resources.clusterer.Clusterer.execute_destructive_interference_circuits
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: circuits_url
+          in: query
+          description: circuits_url
+          required: true
+          schema:
+            type: string
+        - name: backend_name
+          in: query
+          description: backend_name
+          required: true
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: token
+          required: true
+          schema:
+            type: string
+        - name: k
+          in: query
+          description: k
+          required: true
+          schema:
+            type: integer
+        - name: shots_per_circuit
+          in: query
+          description: shots_per_circuit
+          required: true
+          schema:
+            type: integer
+            default: 8192
+      responses:
+        '200':
+          description: execute negative rotation circuits Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExeResponse"
+        '404':
+          description: Clusterer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /circuit-execution/state-preparation-clustering/{job_id}:
+    post:
+      summary: Executes the state preparation clustering algorithm given the generated quantum circuits
+      operationId: resources.clusterer.Clusterer.execute_state_preparation_circuits
+      tags:
+        - clustering
+      parameters:
+        - name: job_id
+          in: path
+          description: Job identifier
+          required: true
+          schema:
+            type: string
+        - name: circuits_url
+          in: query
+          description: circuits_url
+          required: true
+          schema:
+            type: string
+        - name: backend_name
+          in: query
+          description: backend_name
+          required: true
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: token
+          required: true
+          schema:
+            type: string
+        - name: k
+          in: query
+          description: k
+          required: true
+          schema:
+            type: integer
+        - name: shots_per_circuit
+          in: query
+          description: shots_per_circuit
+          required: true
+          schema:
+            type: integer
+            default: 8192
+      responses:
+        '200':
+          description: execute state preparation circuits Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExeResponse"
         '404':
           description: Clusterer not found
           content:
@@ -436,7 +610,7 @@ components:
           format: integer
         message:
           type: string
-        parameterizations_url:
+        circuits_url:
           type: string
     PredictResponse:
       required:
@@ -449,7 +623,7 @@ components:
           type: string
         predictions_url:
           type: string
-    GetResponse:
+    ExeResponse:
       required:
         - message
       properties:
@@ -458,7 +632,7 @@ components:
           format: integer
         message:
           type: string
-        circuits_url:
+        cluster_mapping_url:
           type: string
     CalAnglesResponse:
       required:
