@@ -21,40 +21,38 @@ paths:
           schema:
             type: string
         - name: data_url
-          in: path
+          in: query
           description: data_url
           required: true
           schema:
             type: string
         - name:  optimizer_parameters_url
-          in: path
+          in: query
           description: optimizer_parameters_url
           required: true
           schema:
             type: string
         - name: entanglement
-            in: path
-            description: entanglement
-            required: true
-            schema:
-              type: string
-              default: full
+          in: query
+          description: entanglement
+          required: true
+          schema:
+            type: string
+            default: full
         - name: feature_map_reps
-          in: path
+          in: query
           description: feature_map_reps
           required: true
           schema:
-            type: number
-            format: integer
+            type: integer
             default: 1
         - name: variational_form_reps
-            in: path
-            description: variational_form_reps
-            required: true
-            schema:
-              type: number
-              format: integer
-              default: 3
+          in: query
+          description: variational_form_reps
+          required: true
+          schema:
+            type: integer
+            default: 3
       responses:
         '200':
           description: Initialization Response

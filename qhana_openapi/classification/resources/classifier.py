@@ -1,15 +1,10 @@
-import sys
-
-from quart import request, jsonify, Response
+import connexion
+from flask import jsonify
 
 from SPSAOptimizer import SPSAOptimizer
-from circuitExecutor import CircuitExecutor
-from decisionBoundaryPlotter import DecisionBoundaryPlotter
 from fileService import FileService
-from listSerializer import ListSerializer
 from numpySerializer import NumpySerializer
 from pickleSerializer import PickleSerializer
-from resultsSerializer import ResultsSerializer
 from variationalSVMCircuitGenerator import VariationalSVMCircuitGenerator
 
 
@@ -19,7 +14,7 @@ def generate_url(url_root, route, file_name):
 
 class Classifier:
     @staticmethod
-    def initialize(job_id, data_url, optimizer_parameters_url, entanglement,feature_map_reps,variational_form_reps):
+    def initialize(job_id, data_url, optimizer_parameters_url, entanglement, feature_map_reps, variational_form_reps):
         """
                Initialize variational SVM classification
                * generates circuit template
@@ -109,7 +104,7 @@ class Classifier:
             NumpySerializer.serialize(delta, delta_file_path)
 
             # generate urls
-            url_root = request.host_url
+            url_root = connexion.request.host_url
             circuit_template_url = generate_url(url_root,
                                                 'variational-svm-classification/initialization',
                                                 'circuit-template' + str(job_id))
@@ -139,7 +134,6 @@ class Classifier:
                        thetas_plus_url=thetas_plus_url,
                        thetas_minus_url=thetas_minus_url,
                        delta_url=delta_url), status_code
-
 
 # @app.route('/api/variational-svm-classification/initialization/<int:job_id>', methods=['POST'])
 # async def initialize_classification(job_id):
@@ -684,4 +678,3 @@ class Classifier:
 #                    'rb').read()
 #     content_type = 'application/python-pickle'
 #     return Response(response=payload, mimetype=content_type)
-

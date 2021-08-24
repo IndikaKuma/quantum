@@ -3,9 +3,10 @@ Author: Daniel Fink
 Email: daniel-fink@outlook.com
 """
 
-import os
-import aiohttp
 import codecs
+import os
+import urllib.request
+
 
 class FileService:
     """
@@ -24,16 +25,10 @@ class FileService:
         os.makedirs(folder_path, exist_ok=True)
 
     @classmethod
-    async def fetch_data_as_text(cls, session, url):
-        async with session.get(url) as response:
-            if response.content_type == 'application/python-pickle':
-                return await response.content.read()
-            return await response.text()
+    def download_to_file(cls, url, file_path):
 
-    @classmethod
-    async def download_to_file(cls, url, file_path):
-        async with aiohttp.ClientSession() as session:
-            content_as_text = await cls.fetch_data_as_text(session, url)
+        with urllib.request.urlopen(url) as f:
+            content_as_text = f.read().decode('utf-8')
             text_file = None
             if type(content_as_text) == str:
                 text_file = codecs.open(file_path, 'w', 'utf-8')
