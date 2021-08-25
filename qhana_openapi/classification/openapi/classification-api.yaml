@@ -249,7 +249,7 @@ paths:
           required: true
           schema:
             type: string
-            default: False
+            default: "False"
         - name: iteration
           in: query
           description: iteration
@@ -346,7 +346,7 @@ paths:
           required: true
           schema:
             type: string
-            default: False
+            default: "False"
         - name: n_classes
           in: query
           description: iteration

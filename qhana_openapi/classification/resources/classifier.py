@@ -32,10 +32,10 @@ class Classifier:
         # # load the data from url or json body
         # data_url = request.args.get('data-url', type=str)
         # if data_url is None:
-        #     data_url = (await request.get_json())['data-url']
+        #     data_url = (request.get_json())['data-url']
         #
         # if optimizer_parameters_url is None:
-        #     optimizer_parameters_url = (await request.get_json())['optimizer-parameters-url']
+        #     optimizer_parameters_url = (request.get_json())['optimizer-parameters-url']
 
         # entanglement = request.args.get('entanglement', type=str, default='full')
         # feature_map_reps = request.args.get('feature-map-reps', type=int, default=1)
@@ -180,15 +180,15 @@ class Classifier:
                                         parameterizations_file_path)
 
             # download and store locally
-            await FileService.download_to_file(data_url, data_file_path)
-            await FileService.download_to_file(circuit_template_url, circuit_template_file_path)
+            FileService.download_to_file(data_url, data_file_path)
+            FileService.download_to_file(circuit_template_url, circuit_template_file_path)
 
             if thetas_url is not None and thetas_url != '':
-                await FileService.download_to_file(thetas_url, thetas_file_path)
+                FileService.download_to_file(thetas_url, thetas_file_path)
             if thetas_plus_url is not None and thetas_plus_url != '':
-                await FileService.download_to_file(thetas_plus_url, thetas_plus_file_path)
+                FileService.download_to_file(thetas_plus_url, thetas_plus_file_path)
             if thetas_minus_url is not None and thetas_minus_url != '':
-                await FileService.download_to_file(thetas_minus_url, thetas_minus_file_path)
+                FileService.download_to_file(thetas_minus_url, thetas_minus_file_path)
 
             # deserialize inputs
             data = NumpySerializer.deserialize(data_file_path)
@@ -489,7 +489,7 @@ class Classifier:
                                         labels_file_path)
 
             # download and store locally
-            await FileService.download_to_file(results_url, results_file_path)
+            FileService.download_to_file(results_url, results_file_path)
 
             results = ResultsSerializer.deserialize(results_file_path)
 
