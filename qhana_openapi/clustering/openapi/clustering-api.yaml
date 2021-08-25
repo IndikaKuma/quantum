@@ -147,7 +147,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetResponse"
+                $ref: "#/components/schemas/GenResponse"
         '404':
           description: Clusterer not found
           content:
@@ -178,7 +178,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetResponse"
+                $ref: "#/components/schemas/GenResponse"
         '404':
           description: Clusterer not found
           content:
@@ -512,7 +512,7 @@ paths:
           required: true
           schema:
             type: string
-            default: False
+            default: "False"
       responses:
         '200':
           description: perform_sklearn_clustering Response
